@@ -34,7 +34,7 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
         /// <summary>
         /// The Star model that will represent networked objects in the scene.
         /// </summary>
-        public GameObject BalloonPrefab;
+        public GameObject StarPrefab;
 
         /// <summary>
         /// The Anchor model that will represent the anchor in the scene.
@@ -83,13 +83,13 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
         public void CmdSpawnStar(Vector3 position, Quaternion rotation)
         {
             // Instantiate Star model at the hit pose.
-            var balloonObject = Instantiate(BalloonPrefab, position, rotation);
+            var starObject = Instantiate(StarPrefab, position, rotation);
 
-            balloonObject.GetComponent<StarController>().SetParentToWorldOrigin();
+            starObject.GetComponent<StarController>().SetParentToWorldOrigin();
 
             // Spawn the object in all clients.
 #pragma warning disable 618
-            NetworkServer.Spawn(balloonObject);
+            NetworkServer.Spawn(starObject);
 #pragma warning restore 618
         }
     }

@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Samples/ARCore Extensions/1.23.0/Cloud Anchor Sample/Scenes/Balloon.unity
-    guid: 83fb41cc294e74bdea57537befa00ffc
+    path: Assets/Scenes/BalloonScene.unity
+    guid: 5be17e648f902e74e8ec5b9c49cc809e
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: b818de9e61a8f6140903e86b229768f5, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 8d6a44c29c6c4f64c861ac7b2eb7c2bb, type: 2}

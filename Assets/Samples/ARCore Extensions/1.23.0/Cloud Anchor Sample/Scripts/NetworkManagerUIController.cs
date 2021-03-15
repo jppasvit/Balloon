@@ -367,7 +367,7 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
 #pragma warning disable 618
             NetworkManager.Shutdown();
 #pragma warning restore 618
-            SceneManager.LoadScene("Balloon");
+            SceneManager.LoadScene("CloudAnchors");
         }
 
         /// <summary>

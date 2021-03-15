@@ -188,8 +188,6 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
         private CloudAnchorsNetworkManager _networkManager;
 #pragma warning restore 618
 
-        private bool isBalloonInstantiated = false;
-
         /// <summary>
         /// Enumerates modes the example application can be in.
         /// </summary>
@@ -366,9 +364,9 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
             {
                 // The first touch on the Hosting mode will instantiate the origin anchor. Any
                 // subsequent touch will instantiate a star, both in Hosting and Resolving modes.
-                if (CanPlaceBalloon())
+                if (CanPlaceStars())
                 {
-                    InstantiateBalloon(ToWorldOriginPose(hitResults[0].pose));
+                    InstantiateStar(ToWorldOriginPose(hitResults[0].pose));
                 }
                 else if (!IsOriginPlaced && _currentMode == ApplicationMode.Hosting)
                 {
@@ -565,19 +563,18 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
         /// Instantiates a star object that will be synchronized over the network to other clients.
         /// </summary>
         /// <param name="hitPose">The his position.</param>
-        private void InstantiateBalloon(Pose hitPose)
+        private void InstantiateStar(Pose hitPose)
         {
             // Star must be spawned in the server so a networking Command is used.
             GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>()
                 .CmdSpawnStar(hitPose.position, hitPose.rotation);
-            isBalloonInstantiated = true;
         }
 
         /// <summary>
         /// Indicates whether a star can be placed.
         /// </summary>
         /// <returns><c>true</c>, if stars can be placed, <c>false</c> otherwise.</returns>
-        private bool CanPlaceBalloon()
+        private bool CanPlaceStars()
         {
             if (_currentMode == ApplicationMode.Resolving)
             {
@@ -587,11 +584,6 @@ namespace Google.XR.ARCoreExtensions.Samples.CloudAnchors
             if (_currentMode == ApplicationMode.Hosting)
             {
                 return IsOriginPlaced && _anchorFinishedHosting;
-            }
-
-            if ( isBalloonInstantiated )
-            {
-                return false;
             }
 
             return false;
