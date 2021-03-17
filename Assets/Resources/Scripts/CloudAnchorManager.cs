@@ -16,6 +16,7 @@ public class CloudAnchorManager : MonoBehaviour
     private bool anchorHosted = false;
     private int hostErrors = 0;
     private string hostWarningMessage = "";
+    public bool emulateHost = false;
 
     // Resolve
     public ARCloudAnchor resolveCloudAnchor { get; set; }
@@ -234,7 +235,8 @@ public class CloudAnchorManager : MonoBehaviour
         resolveButton.SetActive(false);
         secondsWaited = 0;
         needWaitForResolve = false;
-}
+        emulateHost = false;
+    }
 
     public bool AnchorIsHosted ( )
     {
