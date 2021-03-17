@@ -25,6 +25,11 @@ public class CloudAnchorManager : MonoBehaviour
     private bool anchorResolved = false;
     private int resolveErrors = 0;
     private string resolveWarningMessage = "";
+    [SerializeField]
+    private float waitSecondsForResolve = 30;
+    private float secondsWaited = 0;
+    [SerializeField]
+    private bool needWaitForResolve = false;
 
     private MessageArea messageArea;
     private ARAnchorManager anchorManager;
@@ -33,6 +38,13 @@ public class CloudAnchorManager : MonoBehaviour
     [SerializeField]
     private int admittedErrors = 30;
     public GameObject clearButton;
+    public GameObject resolveButton;
+
+    //Emulate resolve
+    public bool emulateResolve = false;
+    private bool emulatedResolvePlaced = false;
+
+    private string firstInstructionMessage = "Please tap on the plane where you want the balloon to be created.";
 
 
     private void Awake()
@@ -59,12 +71,7 @@ public class CloudAnchorManager : MonoBehaviour
             }
             else if (check == 1)
             {
-                messageArea.SuccessMessage("Host success");
-                checkHost = false;
-                anchorHosted = true;
-                checkResolve = true; // Automatic resolve when hosting is successful
-                clearButton.SetActive(false);
-                Resolve();
+                OnHostSuccess();
             }
             else if (check == 2)
             {
@@ -80,35 +87,52 @@ public class CloudAnchorManager : MonoBehaviour
 
         if ( checkResolve )
         {
-            var check = CheckHostOrResolve(resolveCloudAnchor);
-            if (check == 0)
+            if ( emulateResolve )
             {
-                Debug.LogError("RESOLVE ERROR");
-                if (CheckErrorsHostOrResolve(1))
+                if ( emulatedResolvePlaced )
                 {
-                    messageArea.ErrorMessage("Resolve error, try again.");
-                    Clear();
+                    OnEmulatedResolveSuccess();
                 }
             }
-            else if (check == 1)
+            else
             {
-                Debug.Log("RESOLVE SUCCESS");
-                checkResolve = false;
-                anchorResolved = true;
-                if (spawnResolveAnchor != null )
+                // Wait To Resolve
+                if (needWaitForResolve)
                 {
-                    spawnResolveAnchor = Instantiate(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
+                    if (WaitToResolve())
+                    {
+                        Resolve();
+                        needWaitForResolve = false;
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
-                //spawnResolveAnchor.transform.SetParent(resolveCloudAnchor.transform, false);
-            }
-            else if (check == 2)
-            {
-                Debug.LogWarning("RESOLVE NOT READY");
-                messageArea.WarningMessage(resolveWarningMessage);
-                if (CheckErrorsHostOrResolve(0))
+                // Check resolve
+                var check = CheckHostOrResolve(resolveCloudAnchor);
+                if (check == 0)
                 {
-                    resolveWarningMessage = WarningMessage("Resolving", true);
-                    clearButton.SetActive(true);
+                    Debug.LogError("RESOLVE ERROR");
+                    if (CheckErrorsHostOrResolve(1))
+                    {
+                        messageArea.ErrorMessage("Resolve error, try again.");
+                        Clear();
+                    }
+                }
+                else if (check == 1)
+                {
+                    OnResolveCloudAnchorSuccess();
+                }
+                else if (check == 2)
+                {
+                    Debug.LogWarning("RESOLVE NOT READY: " + resolveCloudAnchor.cloudAnchorId + " CloudAnchorId HOST: " + hostCloudAnchor.cloudAnchorId + " our cloudAnchorId: " + cloudAnchorId);
+                    messageArea.WarningMessage(resolveWarningMessage);
+                    if (CheckErrorsHostOrResolve(1))
+                    {
+                        resolveWarningMessage = "Resolving is not ready yet, please wait...\nIf resolving does not finish, you can click 'Manual Resolve' to instantiate the balloon manually.";
+                        resolveButton.SetActive(true);
+                    }
                 }
             }
         }
@@ -205,8 +229,12 @@ public class CloudAnchorManager : MonoBehaviour
         cloudAnchorId = "";
         hostWarningMessage = WarningMessage("Hosting", false);
         resolveWarningMessage = WarningMessage("Resolving", false);
+        messageArea.InfoMessage(firstInstructionMessage);
         clearButton.SetActive(false);
-    }
+        resolveButton.SetActive(false);
+        secondsWaited = 0;
+        needWaitForResolve = false;
+}
 
     public bool AnchorIsHosted ( )
     {
@@ -260,4 +288,85 @@ public class CloudAnchorManager : MonoBehaviour
         return sentence;
     }
 
+    private bool WaitToResolve()
+    {
+        if (secondsWaited < waitSecondsForResolve)
+        {
+            Debug.Log("WAITING FOR RESOLVE...");
+            secondsWaited += Time.deltaTime;
+            return false;
+        }
+        
+        return true;
+    }
+
+    private void OnResolveCloudAnchorSuccess()
+    {
+        Debug.Log("RESOLVE SUCCESS : " + resolveCloudAnchor.cloudAnchorId);
+        checkResolve = false;
+        anchorResolved = true;
+        if (spawnResolveAnchor == null)
+        {
+            spawnResolveAnchor = Instantiate(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
+        }
+
+        if (spawnHostAnchorBase != null)
+        {
+            Destroy(spawnHostAnchorBase);
+        }
+        messageArea.InfoMessage("Play can begin");
+    }
+
+    private void OnEmulatedResolveSuccess()
+    {
+        Debug.Log("EMULATE RESOLVE");
+        checkResolve = false;
+        anchorResolved = true;
+        
+        if (spawnHostAnchorBase != null)
+        {
+            Destroy(spawnHostAnchorBase);
+        }
+
+        messageArea.InfoMessage("Play can begin");
+    }
+
+    public void LocateEmulatedResolve(Pose pose)
+    {
+        if (spawnResolveAnchor == null)
+        {
+            spawnResolveAnchor = Instantiate(resolveAnchorPrefab, pose.position, pose.rotation);
+        }
+        else
+        {
+            spawnResolveAnchor.transform.position = pose.position;
+        }
+        emulatedResolvePlaced = true;
+    }
+
+    public bool IsResolveEmulation()
+    {
+        return emulateResolve;
+    }
+
+    private void OnHostSuccess()
+    {
+        messageArea.SuccessMessage("Host success");
+        checkHost = false;
+        anchorHosted = true;
+        // Automatic resolve when hosting is successful
+        checkResolve = true;
+        clearButton.SetActive(false);
+        //needWaitForResolve = true;
+        if (!needWaitForResolve)
+        {
+            Resolve();
+        }
+        //Emulate resolve
+        if ( emulateResolve )
+        {
+            messageArea.InfoMessage(firstInstructionMessage);
+        }
+
+    }
 }

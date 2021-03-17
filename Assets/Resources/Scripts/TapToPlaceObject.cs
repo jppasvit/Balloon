@@ -36,20 +36,18 @@ public class TapToPlaceObject : MonoBehaviour
         if (raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
         {
             var hitPose = hits[0].pose;
-            if ( managerCloudAnchor.AnchorIsHosted() || managerCloudAnchor.AnchorIsResolved() )
+            if ( managerCloudAnchor.AnchorIsHosted() )
             {
-                if ( managerCloudAnchor.hostCloudAnchor.cloudAnchorState == CloudAnchorState.Success )
+                if( !managerCloudAnchor.AnchorIsResolved() )
                 {
-                    Debug.LogAssertion("SUCCESS: " + managerCloudAnchor.hostCloudAnchor.cloudAnchorId);
-                    SpawnOrLocateGameObject(gameObjectToInstantiate, hitPose.position, hitPose.rotation);
-                }
-                else if ( managerCloudAnchor.hostCloudAnchor.cloudAnchorState == CloudAnchorState.TaskInProgress )
-                {
-                    Debug.LogWarning("cloudAnchorState NOT READY!!!");
+                    if ( managerCloudAnchor.IsResolveEmulation() )
+                    {
+                        managerCloudAnchor.LocateEmulatedResolve(hitPose);
+                    }
                 }
                 else
                 {
-                    Debug.LogError("cloudAnchorState ERROOOOR!!!");
+                    //SpawnOrLocateGameObject(gameObjectToInstantiate, hitPose.position, hitPose.rotation);
                 }
             }
             else

@@ -219,7 +219,7 @@ namespace Photon.Pun
 
                 Player prevOwner = this.Owner;
                 this.ownerActorNr = value;
-                this.Owner = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(this.ownerActorNr);
+                this.Owner = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(this.ownerActorNr, true);
                 this.AmOwner = PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == value;
 
                 this.UpdateCallbackLists();
@@ -249,7 +249,7 @@ namespace Photon.Pun
 
                 Player prevController = this.Controller;
                 this.controllerActorNr = value;
-                this.Controller = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(this.controllerActorNr);
+                this.Controller = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(this.controllerActorNr, true);
                 this.IsMine = PhotonNetwork.LocalPlayer != null && this.controllerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
 
                 this.UpdateCallbackLists();

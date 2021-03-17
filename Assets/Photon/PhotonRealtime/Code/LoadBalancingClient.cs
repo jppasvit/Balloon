@@ -902,7 +902,7 @@ namespace Photon.Realtime
                 this.Server = ServerConnection.MasterServer;
                 int portToUse = appSettings.IsDefaultPort ? 5055 : appSettings.Port;    // TODO: setup new (default) port config
                 this.MasterServerAddress = string.Format("{0}:{1}", appSettings.Server, portToUse);
-                this.SerializationProtocol = SerializationProtocol.GpBinaryV16; // this is a workaround to use On Premises Servers, which don't support GpBinaryV18 yet.
+
                 if (!this.LoadBalancingPeer.Connect(this.MasterServerAddress, this.ProxyServerAddress, this.AppId, this.TokenForInit))
                 {
                     return false;
@@ -942,14 +942,6 @@ namespace Photon.Realtime
         /// </remarks>
         public virtual bool ConnectToMasterServer()
         {
-            // we check if try to connect to a self-hosted Photon Server
-            if (string.IsNullOrEmpty(this.AppId) || !this.IsUsingNameServer)
-            {
-                // this is a workaround to use with version v4.0.29.11263 or lower, which doesn't support GpBinaryV18 yet.
-                this.SerializationProtocol = SerializationProtocol.GpBinaryV16;
-            }
-
-
             this.CheckConnectSetupWebGl();
             this.CheckConnectSetupXboxOne(); // may throw an exception if there are issues that can not be corrected
 
@@ -1170,6 +1162,17 @@ namespace Photon.Realtime
         /// <remarks>Common use case: Press the Lock Button on a iOS device and you get disconnected immediately.</remarks>
         public bool ReconnectToMaster()
         {
+            if (string.IsNullOrEmpty(this.MasterServerAddress))
+            {
+                this.DebugReturn(DebugLevel.WARNING, "ReconnectToMaster() failed. MasterServerAddress is null or empty.");
+                return false;
+            }
+            if (this.tokenCache == null)
+            {
+                this.DebugReturn(DebugLevel.WARNING, "ReconnectToMaster() failed. It seems the client doesn't have any previous authentication token to re-connect.");
+                return false;
+            }
+
             if (this.AuthValues == null)
             {
                 this.DebugReturn(DebugLevel.WARNING, "ReconnectToMaster() with AuthValues == null is not correct!");
@@ -1865,6 +1868,8 @@ namespace Photon.Realtime
             }
 
             this.State = ClientState.Leaving;
+            this.GameServerAddress = String.Empty;
+            this.enterRoomParamsCache = null;
             return this.LoadBalancingPeer.OpLeaveRoom(becomeInactive, sendAuthCookie);
         }
 
@@ -2647,7 +2652,7 @@ namespace Photon.Realtime
                             if (this.ServerPortOverrides.MasterServerPort != 0)
                             {
                                 //Debug.LogWarning("Incoming MasterServer Address: "+this.MasterServerAddress);
-                                this.MasterServerAddress = this.ReplacePortWithAlternative(this.MasterServerAddress, this.ServerPortOverrides.MasterServerPort);
+                                this.MasterServerAddress = ReplacePortWithAlternative(this.MasterServerAddress, this.ServerPortOverrides.MasterServerPort);
                                 //Debug.LogWarning("New MasterServer Address: "+this.MasterServerAddress);
                             }
 
@@ -2737,7 +2742,7 @@ namespace Photon.Realtime
                     }
                     if (this.RegionHandler == null)
                     {
-                        this.RegionHandler = new RegionHandler();
+                        this.RegionHandler = new RegionHandler(this.ServerPortOverrides.MasterServerPort);
                     }
 
                     if (this.RegionHandler.IsPinging)
@@ -2785,7 +2790,7 @@ namespace Photon.Realtime
                             if (this.ServerPortOverrides.GameServerPort != 0)
                             {
                                 //Debug.LogWarning("Incoming GameServer Address: " + this.GameServerAddress);
-                                this.GameServerAddress = this.ReplacePortWithAlternative(this.GameServerAddress, this.ServerPortOverrides.GameServerPort);
+                                this.GameServerAddress = ReplacePortWithAlternative(this.GameServerAddress, this.ServerPortOverrides.GameServerPort);
                                 //Debug.LogWarning("New GameServer Address: " + this.GameServerAddress);
                             }
 
@@ -3311,7 +3316,7 @@ namespace Photon.Realtime
         }
 
 
-        private string ReplacePortWithAlternative(string address, ushort replacementPort)
+        protected internal static string ReplacePortWithAlternative(string address, ushort replacementPort)
         {
             bool webSocket = address.StartsWith("ws");
             if (webSocket)

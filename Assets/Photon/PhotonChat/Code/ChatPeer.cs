@@ -189,7 +189,7 @@ namespace Photon.Chat
     /// </summary>
     public enum CustomAuthenticationType : byte
     {
-        /// <summary>Use a custom authentification service. Currently the only implemented option.</summary>
+        /// <summary>Use a custom authentication service. Currently the only implemented option.</summary>
         Custom = 0,
 
         /// <summary>Authenticates users by their Steam Account. Set auth values accordingly!</summary>
@@ -207,8 +207,14 @@ namespace Photon.Chat
         /// <summary>Authenticates users by their Xbox Account and XSTS token.</summary>
         Xbox = 5,
 
-        /// <summary>Authenticates users by their HTC VIVEPORT Account and user token.</summary>
+        /// <summary>Authenticates users by their HTC Viveport Account and user token. Set AuthGetParameters to "userToken=[userToken]"</summary>
         Viveport = 10,
+
+        /// <summary>Authenticates users by their NSA ID.</summary>
+        NintendoSwitch = 11,
+        
+        /// <summary>Authenticates users by their PSN Account and token (on PS5).</summary>
+        Playstation5 = 12,
 
         /// <summary>Disables custom authentification. Same as not providing any AuthenticationValues for connect (more precisely for: OpAuthenticate).</summary>
         None = byte.MaxValue

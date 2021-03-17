@@ -53,7 +53,7 @@ public class MessageArea : MonoBehaviour
     public void ClearFormat()
     {
         messageArea.color = Color.white;
-        messageArea.fontSize = 25;
+        messageArea.fontSize = 40;
         messageArea.fontStyle = FontStyles.Normal;
     }
 
