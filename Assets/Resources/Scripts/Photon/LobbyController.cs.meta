@@ -3,7 +3,12 @@ guid: 70712bc1b9fb8a140b5823411b3cb0b4
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - createRoomButton: {instanceID: 0}
+  - inputField: {instanceID: 0}
+  - messageArea: {instanceID: 0}
+  - roomButtonPrefab: {instanceID: 0}
+  - placeOfRooms: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

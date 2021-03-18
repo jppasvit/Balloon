@@ -6,14 +6,8 @@ using UnityEngine.UI;
 
 public class MessageArea : MonoBehaviour
 {
-  
-    public GameObject gameObjectMessageArea;
+    [SerializeField]
     private TextMeshProUGUI messageArea;
-
-    void Awake()
-    {
-        messageArea = gameObjectMessageArea.GetComponent<TextMeshProUGUI>();
-    }
 
     public void InfoMessage(string message)
     {
@@ -50,35 +44,35 @@ public class MessageArea : MonoBehaviour
         messageArea.SetText("");
     }
 
-    public void ClearFormat()
+    private void ClearFormat()
     {
         messageArea.color = Color.white;
         messageArea.fontSize = 40;
         messageArea.fontStyle = FontStyles.Normal;
     }
 
-    public void WarningFormat()
+    private void WarningFormat()
     {
         messageArea.color = Color.yellow;
         messageArea.fontSize = 35;
         messageArea.fontStyle = FontStyles.Normal;
     }
 
-    public void ErrorFormat()
+    private void ErrorFormat()
     {
         messageArea.color = Color.red;
         messageArea.fontSize = 35;
         messageArea.fontStyle = FontStyles.Normal;
     }
 
-    public void InstructionFormat()
+    private void InstructionFormat()
     {
         messageArea.color = Color.white;
         messageArea.fontSize = 40;
         messageArea.fontStyle = FontStyles.Underline;
     }
 
-    public void SuccessFormat()
+    private void SuccessFormat()
     {
         messageArea.color = Color.green;
         messageArea.fontSize = 35;

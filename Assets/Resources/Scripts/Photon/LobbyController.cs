@@ -9,16 +9,13 @@ using UnityEngine.UI;
 public class LobbyController : MonoBehaviourPunCallbacks
 {
     [SerializeField]
-    private GameObject createRoomButton;
-    private Button _createRoomButton;
+    private Button createRoomButton;
 
     [SerializeField]
-    private GameObject inputField;
-    private InputField _inputField;
+    private InputField inputField;
 
     [SerializeField]
-    private GameObject messageArea;
-    private Text _messageArea;
+    private Text messageArea;
 
     [SerializeField]
     private int RoomSize = 2;
@@ -35,20 +32,9 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if ( createRoomButton != null )
+        if (createRoomButton != null )
         {
-            _createRoomButton = createRoomButton.GetComponent<Button>();
-            _createRoomButton.onClick.AddListener(CreateRoom);
-        }
-
-        if (inputField != null )
-        {
-            _inputField = inputField.GetComponent<InputField>();
-        }
-
-        if (messageArea != null)
-        {
-            _messageArea = messageArea.GetComponent<Text>();
+            createRoomButton.onClick.AddListener(CreateRoom);
         }
 
     }
@@ -112,7 +98,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
         roomButton.transform.GetChild(0).GetComponent<Text>().text = info.Name;
         RoomButton roomButtonComp = roomButton.GetComponent<RoomButton>();
         roomButtonComp.multiplayerRoomSceneIndex = multiplayerRoomSceneIndex;
-        roomButtonComp.messageAreaText = _messageArea;
+        roomButtonComp.messageAreaText = messageArea;
     }
 
     private bool IsRoomOnRoomList(string roomName)
@@ -131,37 +117,37 @@ public class LobbyController : MonoBehaviourPunCallbacks
     private void CreateRoom()
     {
         RoomOptions roomOptions = new RoomOptions() { IsVisible = true, IsOpen = true, MaxPlayers = (byte)RoomSize };
-        if (string.IsNullOrEmpty(_inputField.text) || string.IsNullOrWhiteSpace(_inputField.text))
+        if (string.IsNullOrEmpty(inputField.text) || string.IsNullOrWhiteSpace(inputField.text))
         {
-            _messageArea.text = "Room name is not valid.";
+            messageArea.text = "Room name is not valid.";
         }
-        else if ( IsRoomOnRoomList(_inputField.text) )
+        else if ( IsRoomOnRoomList(inputField.text) )
         {
-            _messageArea.text = "Room name already exists.";
+            messageArea.text = "Room name already exists.";
         }
         else
         {
-            Debug.Log("Creating room with name: " + _inputField.text);
-            _messageArea.text = "";
-            PhotonNetwork.CreateRoom(_inputField.text, roomOptions);
+            Debug.Log("Creating room with name: " + inputField.text);
+            messageArea.text = "";
+            PhotonNetwork.CreateRoom(inputField.text, roomOptions);
         }
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Debug.Log("Failed on join to room: " + message);
-        _messageArea.text = "Failed on join to room. Try again.";
+        messageArea.text = "Failed on join to room. Try again.";
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.Log("Falied to create room: " + message);
-        _messageArea.text = "Falied to create room. Try again.";
+        messageArea.text = "Falied to create room. Try again.";
     }
 
     public override void OnCreatedRoom()
     {
         Debug.Log("Join Room");
-        PhotonNetwork.JoinRoom(_inputField.text);
+        PhotonNetwork.JoinRoom(inputField.text);
     }
     public override void OnJoinedRoom()
     {

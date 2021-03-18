@@ -1958,9 +1958,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70712bc1b9fb8a140b5823411b3cb0b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createRoomButton: {fileID: 831586944}
-  inputField: {fileID: 1150234274}
-  messageArea: {fileID: 878559631}
+  createRoomButton: {fileID: 831586946}
+  inputField: {fileID: 1150234276}
+  messageArea: {fileID: 878559633}
   RoomSize: 2
   multiplayerRoomSceneIndex: 1
   roomButtonPrefab: {fileID: 4511330248066362819, guid: f1ca82d48a547ca4ba26c7a0112df9dc, type: 3}
