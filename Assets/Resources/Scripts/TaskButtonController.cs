@@ -14,9 +14,9 @@ public class TaskButtonController : MonoBehaviour
 
     private static List<GameObject> buttons = new List<GameObject>();
 
-    void Awake()
+    void Start()
     {
-        FillButtonsList();
+        FillTaskButtonsList();
         TaskForTaskButton(TaskButton.TaskButtonType.Clear);
         TaskForTaskButton(TaskButton.TaskButtonType.Host);
         TaskForTaskButton(TaskButton.TaskButtonType.Resolve);
@@ -40,7 +40,7 @@ public class TaskButtonController : MonoBehaviour
         GameObject taskButton = SearchTaskButtonByTaskButtonType(buttonType);
         if (taskButton != null)
         {
-            var button = taskButton.GetComponent<Button>();
+            var button = taskButton.transform.GetChild(0).GetComponent<Button>();
             if ( buttonType == TaskButton.TaskButtonType.Clear )
             {
                 button.onClick.AddListener(Clear);
@@ -80,10 +80,21 @@ public class TaskButtonController : MonoBehaviour
         if (taskButton != null)
         {
             taskButton.SetActive(active);
+            taskButton.transform.GetChild(0).gameObject.SetActive(active);
         }
     }
 
-    private void FillButtonsList()
+    public void SetActiveButton(TaskButton.TaskButtonType buttonType, bool active)
+    {
+        GameObject taskButton = SearchTaskButtonByTaskButtonType(buttonType);
+        if (taskButton != null)
+        {
+            GameObject button = taskButton.transform.GetChild(0).gameObject;
+            button.SetActive(active);
+        }
+    }
+
+    private void FillTaskButtonsList()
     {
         for(int i = 0; i < transform.childCount ; i++)
         {

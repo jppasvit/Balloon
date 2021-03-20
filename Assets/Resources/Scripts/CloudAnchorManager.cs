@@ -141,6 +141,7 @@ public class CloudAnchorManager : MonoBehaviour
         {
             if ( emulateResolve )
             {
+                OnEmulateResolve();
                 if ( emulatedResolvePlaced )
                 {
                     OnEmulatedResolveSuccess();
@@ -437,7 +438,7 @@ public class CloudAnchorManager : MonoBehaviour
     {
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, false);
-        taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
+        taskButtonController.SetActiveButton(TaskButton.TaskButtonType.Host, false);
         checkHost = false;
         anchorHosted = true;
         checkResolve = true;
@@ -474,5 +475,11 @@ public class CloudAnchorManager : MonoBehaviour
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, true);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
+    }
+
+    private void OnEmulateResolve()
+    {
+        taskButtonController.SetActiveButton(TaskButton.TaskButtonType.Resolve, false);
+        taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
     }
 }
