@@ -26,10 +26,12 @@ public class TaskButtonController : MonoBehaviour
     {
         foreach (GameObject button in buttons)
         {
-            TaskButton taskButton = button.GetComponent<TaskButton>();
-            if (taskButton != null && taskButton.GetTaskButtonType() == buttonType)
-            {
-                return button;
+            if (button != null) {
+                TaskButton taskButton = button.GetComponent<TaskButton>();
+                if (taskButton != null && taskButton.GetTaskButtonType() == buttonType)
+                {
+                    return button;
+                }
             }
         }
         return null;

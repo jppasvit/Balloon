@@ -1,4 +1,5 @@
 using Google.XR.ARCoreExtensions;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,15 +9,10 @@ using UnityEngine.XR.ARSubsystems;
 [RequireComponent(typeof(ARRaycastManager))]
 public class TapToPlaceObject : MonoBehaviour
 {
-    public GameObject gameObjectToInstantiate;
-    public GameObject spawnedGameObject { get; set; }
     private Vector2 touchPosition;
     private ARRaycastManager raycastManager;
     private CloudAnchorManager managerCloudAnchor;
-    public ARCloudAnchor spawnedCloudAnchor { get; set; }
-
-
-    static List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
     private void Awake()
     {
@@ -31,30 +27,43 @@ public class TapToPlaceObject : MonoBehaviour
             return;
         }
 
-        //SelectSpawn(touchPosition);
-
-        if (raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
+        if ( managerCloudAnchor.AnchorIsHosted() && managerCloudAnchor.AnchorIsResolved() )
         {
-            var hitPose = hits[0].pose;
-            if ( managerCloudAnchor.AnchorIsHosted() )
+            PhotonView photonView = GameController.instance.GetBalloonPhotonView();
+            if (GameController.instance.IsBalloonTouched(touchPosition))
             {
-                if( !managerCloudAnchor.AnchorIsResolved() )
+                Debug.Log("GameController Balloon TOUCHED");
+                Debug.LogError("BalloonSynchronizer itsBalloonIsInstantiated: " + BalloonSynchronizer.instance.itsBalloonIsInstantiated);
+                Debug.LogAssertion("BalloonSynchronizer balloonViewId: " + BalloonSynchronizer.instance.balloonViewId);
+                Debug.Log("photonView IS MINE: " + photonView.IsMine);
+            }
+            if ( photonView != null && GameController.instance.IsBalloonTouched(touchPosition) && BalloonSynchronizer.instance.itsBalloonIsInstantiated )
+            {
+                photonView.RPC("RPC_TapOnBalloon", RpcTarget.AllBuffered);
+                Debug.Log("Hosted resolved - in TapOnBalloon");
+            }
+        }
+        else
+        {
+            if (raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
+            {
+                var hitPose = hits[0].pose;
+                if (managerCloudAnchor.AnchorIsHosted())
                 {
-                    if ( managerCloudAnchor.IsResolveEmulation() )
+                    if (!managerCloudAnchor.AnchorIsResolved())
                     {
-                        managerCloudAnchor.LocateEmulatedResolve(hitPose);
+                        if (managerCloudAnchor.IsResolveEmulation())
+                        {
+                            managerCloudAnchor.LocateEmulatedResolve(hitPose);
+                        }
                     }
                 }
                 else
                 {
-                    //SpawnOrLocateGameObject(gameObjectToInstantiate, hitPose.position, hitPose.rotation);
-                }
-            }
-            else
-            {
-                if ( managerCloudAnchor.spawnHostAnchorBase == null )
-                {
-                    managerCloudAnchor.InstantiateAndHostCloudAnchor(hitPose);
+                    if (managerCloudAnchor.spawnHostAnchorBase == null)
+                    {
+                        managerCloudAnchor.InstantiateAndHostCloudAnchor(hitPose);
+                    }
                 }
             }
         }
@@ -74,37 +83,6 @@ public class TapToPlaceObject : MonoBehaviour
 
         touchPosition = default;
         return false;
-    }
-
-    void SpawnOrLocateGameObject(GameObject gameObjectToInstantiate, Vector3 position, Quaternion rotation)
-    {
-        if (spawnedGameObject == null)
-        {
-            spawnedGameObject = Instantiate(gameObjectToInstantiate, position, rotation);
-        }
-        else
-        {
-            spawnedGameObject.transform.position = position;
-        }
-    }
-
-    void SelectSpawn(Vector2 touchPosition)
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
-            {
-                Ray ray = Camera.main.ScreenPointToRay(touchPosition);
-                RaycastHit hitObject;
-
-                if (Physics.SphereCast(ray, (float)0.1, out hitObject))
-                {
-                    spawnedGameObject = hitObject.transform.gameObject;
-                }
-            }
-        }
     }
 
 }

@@ -30,8 +30,20 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     private static List<RoomInfo> roomInfos = new List<RoomInfo>();
 
+    public static LobbyController instance { get; private set; }
+
     void Awake()
     {
+        if ( instance == null )
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         if (createRoomButton != null )
         {
             createRoomButton.onClick.AddListener(CreateRoom);
@@ -40,7 +52,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
+        //PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.JoinLobby();
         Debug.Log("JoinLobby.");
     }
@@ -97,7 +109,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         roomButton.transform.GetChild(0).GetComponent<Text>().text = info.Name;
         RoomButton roomButtonComp = roomButton.GetComponent<RoomButton>();
-        roomButtonComp.multiplayerRoomSceneIndex = multiplayerRoomSceneIndex;
         roomButtonComp.messageAreaText = messageArea;
     }
 
@@ -146,13 +157,19 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     public override void OnCreatedRoom()
     {
-        Debug.Log("Join Room");
-        PhotonNetwork.JoinRoom(inputField.text);
+        Debug.Log("OnCreatedRoom Join Room: " + inputField.text);
     }
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined Room");
-        SceneManager.LoadScene(multiplayerRoomSceneIndex);
+        Debug.Log("Joined Room, load scene");
+        //SceneManager.LoadScene(multiplayerRoomSceneIndex);
+        PhotonNetwork.LoadLevel(multiplayerRoomSceneIndex);
+    }
+
+    public void ButtonJoinRoom( string roomName )
+    {
+        Debug.Log("Join roomName button: " + roomName);
+        PhotonNetwork.JoinRoom(roomName);
     }
 
 }

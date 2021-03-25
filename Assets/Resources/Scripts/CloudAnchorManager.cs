@@ -1,4 +1,5 @@
 using Google.XR.ARCoreExtensions;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,12 +83,6 @@ public class CloudAnchorManager : MonoBehaviour
     private ARAnchorManager anchorManager;
     [SerializeField]
     private TaskButtonController taskButtonController;
-
-    // Buttons
-    [Header("Buttons")]
-    public GameObject clearButton;
-    public GameObject manualResolveButton;
-    public GameObject manualHostButton;
 
     private void Awake()
     {
@@ -229,18 +224,6 @@ public class CloudAnchorManager : MonoBehaviour
         
     }
 
-    private void ChangeOpacityBalloon (float opacity)
-    {
-        GameObject cylinder = spawnHostAnchorBase.transform.GetChild(0).gameObject;
-        GameObject sphere = spawnHostAnchorBase.transform.GetChild(1).gameObject;
-
-        var color = cylinder.GetComponent<MeshRenderer>().material.color;
-        cylinder.GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, opacity);
-
-        color = sphere.GetComponent<MeshRenderer>().material.color;
-        sphere.GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, opacity);
-    }
-
     /*
      * 0 CloudAnchorState.ERROOOOR
      * 1 CloudAnchorState.Success
@@ -357,7 +340,8 @@ public class CloudAnchorManager : MonoBehaviour
     {
         if (spawnResolveAnchor == null)
         {
-            spawnResolveAnchor = Instantiate(resolveAnchorPrefab, pose.position, pose.rotation);
+            spawnResolveAnchor = BalloonSynchronizer.instance.InstantiateAndAllocateViewId(resolveAnchorPrefab, pose.position, pose.rotation);
+            //spawnResolveAnchor = Instantiate(resolveAnchorPrefab, pose.position, pose.rotation);
         }
         else
         {
@@ -378,7 +362,8 @@ public class CloudAnchorManager : MonoBehaviour
         anchorResolved = true;
         if (spawnResolveAnchor == null)
         {
-            spawnResolveAnchor = Instantiate(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
+            spawnResolveAnchor = BalloonSynchronizer.instance.InstantiateAndAllocateViewId(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
+            //spawnResolveAnchor = Instantiate(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
         }
 
         if (spawnHostAnchorBase != null)
