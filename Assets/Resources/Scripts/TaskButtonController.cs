@@ -8,8 +8,6 @@ public class TaskButtonController : MonoBehaviour
 {
     [SerializeField]
     private CloudAnchorManager cloudAnchorManager;
-    [SerializeField]
-    private MessageArea messageArea;
     private static string message = "Please tap the place where you want the balloon to be created."; 
 
     private static List<GameObject> buttons = new List<GameObject>();
@@ -60,19 +58,19 @@ public class TaskButtonController : MonoBehaviour
 
     private void Clear()
     {
-        messageArea.InfoMessage(message);
+        MessageArea.instance.InfoMessage(message);
         cloudAnchorManager.Clear();
     }
 
     private void SetTrueEmulateResolve() 
     {
-        messageArea.InfoMessage(message);
+        MessageArea.instance.InfoMessage(message);
         cloudAnchorManager.emulateResolve = true;
     }
 
     private void SetTrueEmulateHost()
     {
-        messageArea.InfoMessage(message);
+        MessageArea.instance.InfoMessage(message);
         cloudAnchorManager.emulateHost = true;
     }
 

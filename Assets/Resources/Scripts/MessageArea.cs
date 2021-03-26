@@ -8,6 +8,20 @@ public class MessageArea : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI messageArea;
+    public static MessageArea instance { get; private set; }
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void InfoMessage(string message)
     {

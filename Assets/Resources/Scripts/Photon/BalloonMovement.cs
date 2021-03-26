@@ -6,7 +6,7 @@ using UnityEngine;
 public class BalloonMovement : MonoBehaviour
 {
     [SerializeField]
-    private float tapForce = 2;
+    private float gravityForce = 2;
     private Rigidbody rigidbody;
     private PhotonView photonView;
     
@@ -18,9 +18,15 @@ public class BalloonMovement : MonoBehaviour
     }
 
     [PunRPC]
+    public void RPC_Gravity()
+    {
+        rigidbody.AddForce(transform.up * -gravityForce);
+    }
+
+    [PunRPC]
     public void RPC_TapOnBalloon()
     {
-        rigidbody.AddForce(transform.up * tapForce);
+        rigidbody.AddForce(transform.up * gravityForce);
     }
 
 }

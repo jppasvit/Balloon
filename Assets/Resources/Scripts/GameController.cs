@@ -8,6 +8,13 @@ public class GameController : MonoBehaviour
     public static GameController instance { get; private set; }
     public GameObject balloon { get; private set; }
 
+    // Game flow
+    private bool startGame = true;
+    private bool myTurn = false;
+
+    // PhotonView
+    private PhotonView photonView;
+
     void Awake()
     {
         if (instance == null)
@@ -21,9 +28,37 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
+
     void Update()
     {
-        FindBalloon();
+        if (balloon == null)
+        {
+            FindBalloon();
+        }
+
+        // Game flow
+        if ( BalloonSynchronizer.instance.AreBallonsSynchronized() )
+        {
+            if (startGame)
+            {
+                MessageArea.instance.SuccessMessage("GAME STARTS!!!");
+                balloon.GetPhotonView().RPC("RPC_Gravity", RpcTarget.All);
+                startGame = false;
+            }
+
+            if ( myTurn )
+            {
+                MessageArea.instance.SuccessMessage("IS YOUR TURN\nTap the balloon.");
+            }
+            else
+            {
+                MessageArea.instance.ErrorMessage("IS NOT YOUR TURN\nWait your turn.");
+            }
+        }
     }
 
     private void FindBalloon ()
@@ -70,4 +105,29 @@ public class GameController : MonoBehaviour
         }
         return false;
     }
+
+    // Give me first turn
+    public void TakeFirstTurn()
+    {
+        myTurn = true;
+        photonView.RPC("RPC_TakeTurn", RpcTarget.Others, false);
+    }
+
+    [PunRPC]
+    public void RPC_TakeTurn(bool value)
+    {
+        myTurn = value;
+    }
+
+    public void TapOnBalloon()
+    {
+        if (myTurn)
+        {
+            balloon.GetPhotonView().RPC("RPC_TapOnBalloon", RpcTarget.All);
+            myTurn = false;
+            photonView.RPC("RPC_TakeTurn", RpcTarget.Others, true);
+            
+        }
+    }
+
 }

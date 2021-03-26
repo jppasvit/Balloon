@@ -39,7 +39,7 @@ public class TapToPlaceObject : MonoBehaviour
             }
             if ( photonView != null && GameController.instance.IsBalloonTouched(touchPosition) && BalloonSynchronizer.instance.itsBalloonIsInstantiated )
             {
-                photonView.RPC("RPC_TapOnBalloon", RpcTarget.AllBuffered);
+                GameController.instance.TapOnBalloon();
                 Debug.Log("Hosted resolved - in TapOnBalloon");
             }
         }

@@ -78,11 +78,12 @@ public class CloudAnchorManager : MonoBehaviour
     // Managers
     [Header("Managers")]
     [SerializeField]
-    private MessageArea messageArea;
-    [SerializeField]
     private ARAnchorManager anchorManager;
     [SerializeField]
     private TaskButtonController taskButtonController;
+
+    // PhotonView
+    private PhotonView photonView;
 
     private void Awake()
     {
@@ -91,10 +92,7 @@ public class CloudAnchorManager : MonoBehaviour
             anchorManager = GetComponent<ARAnchorManager>();
         }
 
-        if ( messageArea == null )
-        {
-            messageArea = GetComponent<MessageArea>();
-        }
+        photonView = GetComponent<PhotonView>();
     }
 
     private void Update()
@@ -113,8 +111,7 @@ public class CloudAnchorManager : MonoBehaviour
                 }
                 else if ( hostCloudAnchor.cloudAnchorState == CloudAnchorState.TaskInProgress )
                 {
-                    Debug.LogWarning("HOST NOT READY");
-                    messageArea.WarningMessage(hostMessage);
+                    MessageArea.instance.WarningMessage(hostMessage);
                     if ( CheckErrorsHostOrResolve(CloudAnchorPhase.Host) )
                     {
                         OnHostNotReady();
@@ -123,7 +120,6 @@ public class CloudAnchorManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("HOST ERROR");
                     if ( CheckErrorsHostOrResolve(CloudAnchorPhase.Host) )
                     {
                         OnHostError();
@@ -164,8 +160,7 @@ public class CloudAnchorManager : MonoBehaviour
                 }
                 else if ( resolveCloudAnchor.cloudAnchorState == CloudAnchorState.TaskInProgress )
                 {
-                    Debug.LogWarning("RESOLVE NOT READY: " + resolveCloudAnchor.cloudAnchorId + " CloudAnchorId HOST: " + hostCloudAnchor.cloudAnchorId + " our cloudAnchorId: " + cloudAnchorId);
-                    messageArea.WarningMessage(resolveMessage);
+                    MessageArea.instance.WarningMessage(resolveMessage);
                     if ( CheckErrorsHostOrResolve(CloudAnchorPhase.Resolve) )
                     {
                         OnResolveNotReady();
@@ -174,7 +169,6 @@ public class CloudAnchorManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("RESOLVE ERROR");
                     if ( CheckErrorsHostOrResolve(CloudAnchorPhase.Resolve) )
                     {
                         OnResolveError();
@@ -215,40 +209,9 @@ public class CloudAnchorManager : MonoBehaviour
     {
         if ( string.IsNullOrEmpty(cloudAnchorId) || string.IsNullOrWhiteSpace(cloudAnchorId) )
         {
-            cloudAnchorId = hostCloudAnchor.cloudAnchorId;
-            if (!string.IsNullOrEmpty(cloudAnchorId) && !string.IsNullOrWhiteSpace(cloudAnchorId))
-            {
-                ResolveCloudAnchor(cloudAnchorId);
-            }
+            photonView.RPC("RPC_Resolve", RpcTarget.AllBuffered, hostCloudAnchor.cloudAnchorId);
         }
         
-    }
-
-    /*
-     * 0 CloudAnchorState.ERROOOOR
-     * 1 CloudAnchorState.Success
-     * 2 CloudAnchorState.TaskInProgress
-     * 3 None
-     */
-    public int CheckHostOrResolve(ARCloudAnchor cloudAnchor)
-    {
-        int check = 3;
-        if (cloudAnchor)
-        {
-            if (cloudAnchor.cloudAnchorState == CloudAnchorState.Success)
-            {
-                check = 1;
-            }
-            else if (cloudAnchor.cloudAnchorState == CloudAnchorState.TaskInProgress)
-            {
-                check = 2;
-            }
-            else
-            {
-                check = 0;
-            }
-        }
-        return check;
     }
 
     public void Clear()
@@ -277,7 +240,7 @@ public class CloudAnchorManager : MonoBehaviour
         emulateHost = false;
         emulateResolve = false;
 
-        messageArea.InfoMessage(firstInstructionMessage);
+        MessageArea.instance.InfoMessage(firstInstructionMessage);
     }
 
     public bool AnchorIsHosted ( )
@@ -328,7 +291,6 @@ public class CloudAnchorManager : MonoBehaviour
     {
         if (secondsWaited < waitSecondsForResolve)
         {
-            Debug.Log("WAITING FOR RESOLVE...");
             secondsWaited += Time.deltaTime;
             return false;
         }
@@ -341,7 +303,6 @@ public class CloudAnchorManager : MonoBehaviour
         if (spawnResolveAnchor == null)
         {
             spawnResolveAnchor = BalloonSynchronizer.instance.InstantiateAndAllocateViewId(resolveAnchorPrefab, pose.position, pose.rotation);
-            //spawnResolveAnchor = Instantiate(resolveAnchorPrefab, pose.position, pose.rotation);
         }
         else
         {
@@ -357,13 +318,11 @@ public class CloudAnchorManager : MonoBehaviour
 
     private void OnResolveCloudAnchorSuccess()
     {
-        Debug.Log("RESOLVE SUCCESS : " + resolveCloudAnchor.cloudAnchorId);
         checkResolve = false;
         anchorResolved = true;
         if (spawnResolveAnchor == null)
         {
             spawnResolveAnchor = BalloonSynchronizer.instance.InstantiateAndAllocateViewId(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
-            //spawnResolveAnchor = Instantiate(resolveAnchorPrefab, resolveCloudAnchor.transform.position, resolveCloudAnchor.transform.rotation);
         }
 
         if (spawnHostAnchorBase != null)
@@ -375,12 +334,11 @@ public class CloudAnchorManager : MonoBehaviour
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
 
-        messageArea.InfoMessage("Play can begin");
+        MessageArea.instance.InfoMessage("Wait until the another player's balloon is synchronized.\nThe game starts when balloons are synchronized.");
     }
 
     private void OnEmulatedResolveSuccess()
     {
-        Debug.Log("EMULATE RESOLVE");
         checkResolve = false;
         anchorResolved = true;
 
@@ -393,12 +351,12 @@ public class CloudAnchorManager : MonoBehaviour
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
 
-        messageArea.InfoMessage("Play can begin");
+        MessageArea.instance.InfoMessage("Wait until the another player's balloon is synchronized.\nThe game starts when balloons are synchronized.");
     }
 
     private void OnHostSuccess()
     {
-        messageArea.SuccessMessage("Host success");
+        MessageArea.instance.SuccessMessage("Host success");
         checkHost = false;
         anchorHosted = true;
         // Automatic resolve when hosting is successful
@@ -406,7 +364,6 @@ public class CloudAnchorManager : MonoBehaviour
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
-        //needWaitForResolve = true;
         if (!needWaitForResolve)
         {
             Resolve();
@@ -414,9 +371,8 @@ public class CloudAnchorManager : MonoBehaviour
         //Emulate resolve
         if ( emulateResolve )
         {
-            messageArea.InfoMessage(firstInstructionMessage);
+            MessageArea.instance.InfoMessage(firstInstructionMessage);
         }
-
     }
 
     private void OnEmulateHost()
@@ -432,7 +388,7 @@ public class CloudAnchorManager : MonoBehaviour
 
     private void OnHostError()
     {
-        messageArea.ErrorMessage(hostErrorMessage);
+        MessageArea.instance.ErrorMessage(hostErrorMessage);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, true);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, true);
@@ -440,7 +396,7 @@ public class CloudAnchorManager : MonoBehaviour
 
     private void OnHostNotReady()
     {
-        messageArea.WarningMessage(hostLargeWarningMessage);
+        MessageArea.instance.WarningMessage(hostLargeWarningMessage);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, true);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, true);
@@ -448,7 +404,7 @@ public class CloudAnchorManager : MonoBehaviour
 
     private void OnResolveError()
     {
-        messageArea.ErrorMessage(resolveErrorMessage);
+        MessageArea.instance.ErrorMessage(resolveErrorMessage);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, true);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
@@ -456,7 +412,7 @@ public class CloudAnchorManager : MonoBehaviour
 
     private void OnResolveNotReady()
     {
-        messageArea.WarningMessage(resolveLargeWarningMessage);
+        MessageArea.instance.WarningMessage(resolveLargeWarningMessage);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Resolve, true);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Host, false);
@@ -466,5 +422,19 @@ public class CloudAnchorManager : MonoBehaviour
     {
         taskButtonController.SetActiveButton(TaskButton.TaskButtonType.Resolve, false);
         taskButtonController.SetActiveTaskButton(TaskButton.TaskButtonType.Clear, false);
+    }
+
+    [PunRPC]
+    public void RPC_Resolve(string id)
+    {
+        Debug.LogAssertion("RPC_Resolve <- " + id);
+        cloudAnchorId = id;
+        checkHost = false; // For the others
+        anchorHosted = true; // For the others
+        if (!string.IsNullOrEmpty(cloudAnchorId) && !string.IsNullOrWhiteSpace(cloudAnchorId))
+        {
+            ResolveCloudAnchor(cloudAnchorId);
+        }
+        MessageArea.instance.InfoMessage("Resolving balloon wait...");
     }
 }

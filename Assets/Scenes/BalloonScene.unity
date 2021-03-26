@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 36486226}
   - component: {fileID: 36486228}
   - component: {fileID: 36486227}
+  - component: {fileID: 36486229}
   m_Layer: 5
   m_Name: MessageArea
   m_TagString: Untagged
@@ -258,6 +259,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 36486225}
   m_CullTransparentMesh: 1
+--- !u!114 &36486229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36486225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac012c04ee6f1c42a93f1675572ca75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messageArea: {fileID: 36486227}
 --- !u!1 &127791130
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,67 +320,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &236002608
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 540
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 960
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 542712709064943961, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4622045995510286884, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: sceneViewId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8786521024958887643, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
-      propertyPath: m_Name
-      value: BalloonSynchronizer
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b5dda056de2092b44bf61f31e3c38e08, type: 3}
 --- !u!1 &239285550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,7 +1193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloudAnchorManager: {fileID: 1572414770}
-  messageArea: {fileID: 1572414773}
+  messageArea: {fileID: 0}
 --- !u!1 &1572414765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,7 +1209,7 @@ GameObject:
   - component: {fileID: 1572414772}
   - component: {fileID: 1572414770}
   - component: {fileID: 1572414771}
-  - component: {fileID: 1572414773}
+  - component: {fileID: 1572414774}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -1339,7 +1292,6 @@ MonoBehaviour:
   needWaitForResolve: 0
   waitSecondsForResolve: 30
   admittedErrors: 30
-  messageArea: {fileID: 1572414773}
   anchorManager: {fileID: 1572414768}
   taskButtonController: {fileID: 1234769821}
 --- !u!114 &1572414771
@@ -1367,7 +1319,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastPrefab: {fileID: 0}
---- !u!114 &1572414773
+--- !u!114 &1572414774
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1376,10 +1328,87 @@ MonoBehaviour:
   m_GameObject: {fileID: 1572414765}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ac012c04ee6f1c42a93f1675572ca75, type: 3}
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  messageArea: {fileID: 36486227}
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!1 &1612408470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1612408473}
+  - component: {fileID: 1612408472}
+  - component: {fileID: 1612408471}
+  m_Layer: 0
+  m_Name: BalloonSynchronizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1612408471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612408470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6663408874a45b4bb1b7900f591230e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  balloonViewId: 0
+  itsBalloonIsInstantiated: 0
+--- !u!114 &1612408472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612408470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!4 &1612408473
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612408470}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 540, y: 960, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1831760659
 GameObject:
   m_ObjectHideFlags: 0
@@ -1389,6 +1418,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1831760661}
+  - component: {fileID: 1831760662}
   - component: {fileID: 1831760660}
   m_Layer: 0
   m_Name: GameController
@@ -1423,6 +1453,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1831760662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831760659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 3
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1962544461
 GameObject:
   m_ObjectHideFlags: 0
