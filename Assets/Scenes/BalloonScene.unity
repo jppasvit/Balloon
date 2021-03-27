@@ -1193,7 +1193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloudAnchorManager: {fileID: 1572414770}
-  messageArea: {fileID: 0}
 --- !u!1 &1572414765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,6 +1209,7 @@ GameObject:
   - component: {fileID: 1572414770}
   - component: {fileID: 1572414771}
   - component: {fileID: 1572414774}
+  - component: {fileID: 1572414773}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -1270,7 +1270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlanePrefab: {fileID: 6969391086271429590, guid: 5b9a0d1cb00944aa3bead01f3b0839c9, type: 3}
+  m_PlanePrefab: {fileID: 2391091607998463992, guid: c4d5f2a5e4b59e0439594658ad99ea51, type: 3}
   m_DetectionMode: -1
 --- !u!114 &1572414770
 MonoBehaviour:
@@ -1319,6 +1319,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastPrefab: {fileID: 0}
+--- !u!114 &1572414773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572414765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8853e38da90f2cd4fae5c9bd87753517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorApproximationRange: 0.1
 --- !u!114 &1572414774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1439,6 +1452,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70acebce99fdceb41b74df8a53e55a36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  balloonElevation: 0.5
+  waitToStart: 5
+  planeClassificationEnabled: 1
 --- !u!4 &1831760661
 Transform:
   m_ObjectHideFlags: 0

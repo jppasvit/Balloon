@@ -8,9 +8,29 @@ public class GameController : MonoBehaviour
     public static GameController instance { get; private set; }
     public GameObject balloon { get; private set; }
 
-    // Game flow
+    // # Game flow #
+
+    // Start control
     private bool startGame = true;
+
+    // Balloon elevation
+    [SerializeField]
+    private float balloonElevation = 0.5F;
+    private bool isBalloonElevated = false;
+
+    // Turn control
     private bool myTurn = false;
+
+    // Wait to start
+    [SerializeField]
+    private float waitToStart = 5;
+    private float timeWaited = 0;
+
+    // Game Over
+    private bool gameOver = false;
+    public bool planeClassificationEnabled = true;
+
+    // # Game flow #
 
     // PhotonView
     private PhotonView photonView;
@@ -45,19 +65,39 @@ public class GameController : MonoBehaviour
         {
             if (startGame)
             {
-                MessageArea.instance.SuccessMessage("GAME STARTS!!!");
-                balloon.GetPhotonView().RPC("RPC_Gravity", RpcTarget.All);
+                if (!isBalloonElevated)
+                {
+                    balloon.GetPhotonView().RPC("RPC_RaisePosition", RpcTarget.All, balloonElevation);
+                    isBalloonElevated = true;
+                }
+
+                while (timeWaited < waitToStart)
+                {
+                    MessageArea.instance.WarningMessage("Game starts in " + (int)(waitToStart - timeWaited) + "s");
+                    timeWaited += Time.deltaTime;
+                    return;
+                }
+
+                balloon.GetPhotonView().RPC("RPC_SetActiveGravity", RpcTarget.All, true);
                 startGame = false;
             }
 
-            if ( myTurn )
+            if ( !gameOver ) 
             {
-                MessageArea.instance.SuccessMessage("IS YOUR TURN\nTap the balloon.");
+                if (myTurn)
+                {
+                    MessageArea.instance.SuccessMessage("IS YOUR TURN\nTap the balloon.");
+                }
+                else
+                {
+                    MessageArea.instance.ErrorMessage("IS NOT YOUR TURN\nWait your turn.");
+                }
             }
             else
             {
-                MessageArea.instance.ErrorMessage("IS NOT YOUR TURN\nWait your turn.");
+                MessageArea.instance.ErrorMessage("GAME OVER");
             }
+
         }
     }
 
@@ -128,6 +168,20 @@ public class GameController : MonoBehaviour
             photonView.RPC("RPC_TakeTurn", RpcTarget.Others, true);
             
         }
+    }
+
+    public void GameOver(bool value)
+    {
+        if (!startGame)
+        {
+            photonView.RPC("RPC_GameOver", RpcTarget.All, value);
+        }
+    }
+
+    [PunRPC]
+    public void RPC_GameOver(bool value)
+    {
+        gameOver = value;
     }
 
 }

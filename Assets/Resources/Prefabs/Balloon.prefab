@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 6738001434576806536}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5955980352856728753
 MeshFilter:
@@ -111,7 +111,7 @@ Transform:
   m_LocalScale: {x: 0.1, y: 2, z: 0.1}
   m_Children: []
   m_Father: {fileID: 6738001434576806536}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6260199482257928796
 MeshFilter:
@@ -173,6 +173,7 @@ GameObject:
   - component: {fileID: 6738001434576806536}
   - component: {fileID: 7912188935379854604}
   - component: {fileID: 7756683583924974589}
+  - component: {fileID: 4183952659195703690}
   - component: {fileID: -8082843397679455166}
   - component: {fileID: 7483958411817926194}
   - component: {fileID: 5386963435086430347}
@@ -194,8 +195,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
-  - {fileID: 1801978780270152237}
   - {fileID: 8787164674580207372}
+  - {fileID: 1801978780270152237}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -228,6 +229,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!75 &4183952659195703690
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6553800478743313840}
+  m_Enabled: 1
+  m_Force: {x: 0, y: 0, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &-8082843397679455166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,4 +292,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 987a3ba6704d83247aa4d4363dc0e023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tapForce: 2
+  gravityForce: 0.15
+  tapForce: 15
