@@ -175,7 +175,6 @@ GameObject:
   - component: {fileID: 7756683583924974589}
   - component: {fileID: 4183952659195703690}
   - component: {fileID: -8082843397679455166}
-  - component: {fileID: 7483958411817926194}
   - component: {fileID: 5386963435086430347}
   m_Layer: 0
   m_Name: Balloon
@@ -260,26 +259,10 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 7483958411817926194}
+  - {fileID: 5386963435086430347}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7483958411817926194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6553800478743313840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 0
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!114 &5386963435086430347
 MonoBehaviour:
   m_ObjectHideFlags: 0

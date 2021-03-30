@@ -170,6 +170,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void TapOnAndPushBalloon(Vector2 touchPosition)
+    {
+        if (myTurn)
+        {
+            balloon.GetPhotonView().RPC("RPC_TapOnAndPushBalloon", RpcTarget.All, touchPosition);
+            myTurn = false;
+            photonView.RPC("RPC_TakeTurn", RpcTarget.Others, true);
+        }
+    }
+
     public void GameOver(bool value)
     {
         if (!startGame)

@@ -6,12 +6,15 @@ using UnityEngine.XR.ARFoundation;
 
 [RequireComponent(typeof(ConstantForce))]
 [RequireComponent(typeof(Rigidbody))]
-public class BalloonMovement : MonoBehaviour
+[RequireComponent(typeof(PhotonView))]
+public class BalloonMovement : MonoBehaviourPunCallbacks, IPunObservable
 {
     [SerializeField]
     private float gravityForce = 0.15F;
     [SerializeField]
-    private float tapForce = 15;
+    private float tapForce = 20;
+    [SerializeField]
+    private float upVector = 20;
     private Rigidbody rigidbody;
     private ConstantForce constantForce;
     
@@ -42,6 +45,14 @@ public class BalloonMovement : MonoBehaviour
     }
 
     [PunRPC]
+    public void RPC_TapOnAndPushBalloon(Vector2 touchPosition)
+    {
+        Vector3 touchPositionAtScreen = Camera.main.ScreenToWorldPoint(touchPosition);
+        Vector3 direction = (transform.up * upVector - (touchPositionAtScreen - rigidbody.transform.position) );
+        rigidbody.AddForce(direction.normalized * tapForce);
+    }
+
+    [PunRPC]
     public void RPC_RaisePosition(float y)
     {
         transform.Translate(transform.up * y, Space.World);
@@ -49,11 +60,9 @@ public class BalloonMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("OnCollisionEnter");
         ARPlane plane = collision.gameObject.GetComponent<ARPlane>();
         if ( plane != null  )
         {
-            Debug.Log("OnCollisionEnter its a plane");
             if ( GameController.instance.planeClassificationEnabled )
             {
                 if ( PlaneClassificationManager.instance.IsFloor(plane) )
@@ -65,6 +74,20 @@ public class BalloonMovement : MonoBehaviour
             {
                 GameController.instance.GameOver(true);
             }
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            Debug.LogError("-> IsWriting <-");
+            stream.SendNext(transform.rotation);
+        }
+        else if (stream.IsReading)
+        {
+            Debug.Log("-> IsReading <-");
+            transform.rotation = (Quaternion)stream.ReceiveNext();
         }
     }
 
