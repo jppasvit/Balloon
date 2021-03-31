@@ -52,9 +52,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
     public override void OnConnectedToMaster()
     {
-        //PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.JoinLobby();
-        Debug.Log("JoinLobby.");
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -65,14 +63,9 @@ public class LobbyController : MonoBehaviourPunCallbacks
             if (!info.RemovedFromList)
             {
                 roomInfos.Add(info);
-                Debug.Log("Room Name Added: " + info.Name);
             }
-            Debug.Log("Room Name: " + info.Name);
-
         }
         UpdateMenuRoomList();
-        Debug.Log("Into OnRoomListUpdate");
-        Debug.Log("Rooms: " + roomList.Count);
     }
 
     private void UpdateMenuRoomList() {
@@ -161,8 +154,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined Room, load scene");
-        //SceneManager.LoadScene(multiplayerRoomSceneIndex);
         PhotonNetwork.LoadLevel(multiplayerRoomSceneIndex);
     }
 

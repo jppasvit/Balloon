@@ -46,7 +46,6 @@ public class BalloonSynchronizer : MonoBehaviour
             if (PhotonNetwork.AllocateViewID(balloonPhotonView))
             {
                 photonView.RPC("RPC_SetBalloonViewId", RpcTarget.AllBuffered, balloonPhotonView.ViewID);
-                GameController.instance.TakeFirstTurn();
             }
             else
             {

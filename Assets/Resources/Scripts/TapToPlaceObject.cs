@@ -30,17 +30,9 @@ public class TapToPlaceObject : MonoBehaviour
         if ( managerCloudAnchor.AnchorIsHosted() && managerCloudAnchor.AnchorIsResolved() )
         {
             PhotonView photonView = GameController.instance.GetBalloonPhotonView();
-            if (GameController.instance.IsBalloonTouched(touchPosition))
-            {
-                Debug.Log("GameController Balloon TOUCHED");
-                Debug.LogError("BalloonSynchronizer itsBalloonIsInstantiated: " + BalloonSynchronizer.instance.itsBalloonIsInstantiated);
-                Debug.LogAssertion("BalloonSynchronizer balloonViewId: " + BalloonSynchronizer.instance.balloonViewId);
-                Debug.Log("photonView IS MINE: " + photonView.IsMine);
-            }
-            if ( photonView != null && GameController.instance.IsBalloonTouched(touchPosition) && BalloonSynchronizer.instance.itsBalloonIsInstantiated )
+            if ( photonView != null && GameController.instance.IsBalloonTouched(touchPosition) && BalloonSynchronizer.instance.AreBallonsSynchronized() )
             {
                 GameController.instance.TapOnAndPushBalloon(touchPosition);
-                Debug.Log("Hosted resolved - in TapOnBalloon");
             }
         }
         else

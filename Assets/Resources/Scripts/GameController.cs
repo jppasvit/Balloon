@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 
     // Turn control
     private bool myTurn = false;
+    private bool firstTurn = false;
 
     // Wait to start
     [SerializeField]
@@ -58,6 +59,12 @@ public class GameController : MonoBehaviour
         if (balloon == null)
         {
             FindBalloon();
+        }
+
+        if (myTurn == false && PhotonNetwork.PlayerList.Length == 1)
+        {
+            firstTurn = true;
+            TakeTurn();
         }
 
         // Game flow
@@ -147,7 +154,7 @@ public class GameController : MonoBehaviour
     }
 
     // Give me first turn
-    public void TakeFirstTurn()
+    public void TakeTurn()
     {
         myTurn = true;
         photonView.RPC("RPC_TakeTurn", RpcTarget.Others, false);

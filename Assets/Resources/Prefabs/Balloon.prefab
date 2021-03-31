@@ -260,6 +260,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 5386963435086430347}
+  - {fileID: 0}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -277,3 +278,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityForce: 0.15
   tapForce: 15
+  upVector: 20

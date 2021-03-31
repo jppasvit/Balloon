@@ -209,7 +209,7 @@ public class CloudAnchorManager : MonoBehaviour
     {
         if ( string.IsNullOrEmpty(cloudAnchorId) || string.IsNullOrWhiteSpace(cloudAnchorId) )
         {
-            photonView.RPC("RPC_Resolve", RpcTarget.AllBuffered, hostCloudAnchor.cloudAnchorId);
+            photonView.RPC("RPC_Resolve", RpcTarget.All, hostCloudAnchor.cloudAnchorId);
         }
         
     }
