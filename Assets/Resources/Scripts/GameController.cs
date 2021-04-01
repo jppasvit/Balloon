@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
 
     // Start control
     private bool startGame = true;
+    private Vector3 balloonInitialPosition;
 
     // Balloon elevation
     [SerializeField]
@@ -29,7 +30,15 @@ public class GameController : MonoBehaviour
 
     // Game Over
     private bool gameOver = false;
+
+    // Plane classification
     public bool planeClassificationEnabled = true;
+
+    // Restart
+    private bool restart = false;
+
+    // Tap on balloon control
+    public bool tapBalloonForceVertical = true;
 
     // # Game flow #
 
@@ -70,6 +79,12 @@ public class GameController : MonoBehaviour
         // Game flow
         if ( BalloonSynchronizer.instance.AreBallonsSynchronized() )
         {
+            if (restart)
+            {
+                balloon.transform.position = balloonInitialPosition;
+                restart = false;
+            }
+
             if (startGame)
             {
                 if (!isBalloonElevated)
@@ -166,6 +181,18 @@ public class GameController : MonoBehaviour
         myTurn = value;
     }
 
+    public void TapOnBalloonWrap(Vector2 touchPosition)
+    {
+        if (tapBalloonForceVertical)
+        {
+            TapOnBalloon();
+        }
+        else
+        {
+            TapOnAndPushBalloon(touchPosition);
+        }
+    }
+
     public void TapOnBalloon()
     {
         if (myTurn)
@@ -199,6 +226,27 @@ public class GameController : MonoBehaviour
     public void RPC_GameOver(bool value)
     {
         gameOver = value;
+    }
+
+    public void SetBalloonInitialPosition(Vector3 initialPosition)
+    {
+        balloonInitialPosition = initialPosition;
+    }
+
+    [PunRPC]
+    public void RPC_Restart()
+    {
+        if (BalloonSynchronizer.instance.AreBallonsSynchronized())
+        {
+            restart = true;
+            startGame = true;
+            isBalloonElevated = false;
+            myTurn = firstTurn;
+            timeWaited = 0;
+            gameOver = false;
+            balloon.GetPhotonView().RPC("RPC_SetActiveGravity", RpcTarget.All, false);
+            balloon.GetPhotonView().RPC("RPC_StopVelocity", RpcTarget.All);
+        }
     }
 
 }

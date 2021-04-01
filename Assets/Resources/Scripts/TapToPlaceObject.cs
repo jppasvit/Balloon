@@ -32,7 +32,7 @@ public class TapToPlaceObject : MonoBehaviour
             PhotonView photonView = GameController.instance.GetBalloonPhotonView();
             if ( photonView != null && GameController.instance.IsBalloonTouched(touchPosition) && BalloonSynchronizer.instance.AreBallonsSynchronized() )
             {
-                GameController.instance.TapOnAndPushBalloon(touchPosition);
+                GameController.instance.TapOnBalloonWrap(touchPosition);
             }
         }
         else

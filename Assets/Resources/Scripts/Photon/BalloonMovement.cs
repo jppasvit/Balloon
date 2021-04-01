@@ -58,6 +58,12 @@ public class BalloonMovement : MonoBehaviourPunCallbacks, IPunObservable
         transform.Translate(transform.up * y, Space.World);
     }
 
+    [PunRPC]
+    public void RPC_StopVelocity()
+    {
+        rigidbody.velocity = new Vector3(0, 0, 0);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         ARPlane plane = collision.gameObject.GetComponent<ARPlane>();

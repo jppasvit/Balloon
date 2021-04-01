@@ -25,5 +25,11 @@ public class TestBalloon : MonoBehaviour
             Vector3 direction = (transform.up * 10 - rigidbody.position - touchPositionAtScreen);
             rigidbody.AddForce(direction.normalized * tapForce);
         }
+
+        if (Input.GetKeyDown("s"))
+        {
+            rigidbody.velocity = new Vector3(0, 0, 0);
+        }
     }
+
 }

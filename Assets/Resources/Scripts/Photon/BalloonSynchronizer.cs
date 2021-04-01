@@ -35,6 +35,7 @@ public class BalloonSynchronizer : MonoBehaviour
 
     public GameObject InstantiateAndAllocateViewId(GameObject gameObject, Vector3 position, Quaternion rotation)
     {
+        GameController.instance.SetBalloonInitialPosition(position);
         GameObject balloon = Instantiate(gameObject, position, rotation);
         PhotonView balloonPhotonView = balloon.GetComponent<PhotonView>();
         if (balloonViewId != 0)

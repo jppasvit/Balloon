@@ -437,4 +437,12 @@ public class CloudAnchorManager : MonoBehaviour
         }
         MessageArea.instance.InfoMessage("Resolving balloon wait...");
     }
+
+    public void BalloonManualPositioning()
+    {
+        checkHost = false;
+        anchorHosted = true;
+        checkResolve = true;
+        emulateResolve = true;
+    }
 }
